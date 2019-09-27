@@ -1,23 +1,29 @@
-var express = require('express');
-var bodyParser = require('body-parser');
+var express = require("express"); 
+
+var PORT = process.env.PORT || 3000;
 
 var app = express();
-//Serve static content for the app from the "public" directory in the application directory.
-app.use(express.static(process.cwd() + '/public'));
-// app.use(express.static('public'));
 
-// Parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+// USE THE PUBLIC FOLDER 
+app.use(express.static("public"));
+app.use(express.static(__dirname + '/public'));
 
-// Handlebars
-var exphbs = require('express-handlebars');
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
-app.set('view engine', 'handlebars');
+// JSON PARSING
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
+// USE HANDLEBARS AS THE DEFAULT VIEW ENGINE
+var exphbs = require("express-handlebars");
 
-var router = require('./controllers/burgers_controllers.js');
-app.use('/', router);
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
 
-// Open Server
-var port = process.env.PORT || 3000;
-app.listen(port);
+// GET DA ROUTES
+var routes = require("./controllers/burgers_controllers");
+
+app.use(routes);
+
+// LISTEN UP!
+app.listen(PORT, function() {
+  console.log("Server listening on: http://localhost:" + PORT);
+});
